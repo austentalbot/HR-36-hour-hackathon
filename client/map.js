@@ -93,13 +93,20 @@ document.getElementById("addTag").addEventListener('click', function(){
     tags=tag;
   }
   layer.bindLabel(tags);
+  document.getElementById('tagInput').value='';
 }, false);
 
 //save tags
 document.getElementById("saveTags").addEventListener('click', function(){
-  //loop over all layers from drawn items
-  //pull out all tags
-  //save coords in a list and tags in a list
+  //get all tags from page
+  var tags=createTags();
+  //save tags into mongo
+
+  //clear all layers
+  for (var layer in drawnItems._layers) {
+    drawnItems.removeLayer(drawnItems._layers[layer]);
+  }
+  selectedLayerId=undefined;
 }, false);
 
 var pointInPoly= function (point, polygon) {
@@ -128,3 +135,42 @@ var pointInPoly= function (point, polygon) {
   }
   return inside;
 };
+
+var createTags=function() {
+  var allTags={};
+  for (id in drawnItems._layers) {
+    var layer=drawnItems._layers[id];
+    // allTags[id]=allTags[id] || {};
+    // allTags[id]['coordinates']=layer._latlngs;
+
+    //only add labels for points where there are labels
+    console.log(layer.label);
+    if (layer.label!==undefined) {
+      //loop over all points in boundaries
+      var boundaries=findBoundaries(layer._latlngs);
+      for (var i= parseFloat(boundaries.minLat.toFixed(digits)); i<=parseFloat((boundaries.maxLat+block).toFixed(digits)); i+=block) {
+        var LAT=parseFloat(i.toFixed(digits));
+        for (var j= parseFloat(boundaries.minLng.toFixed(digits)); j<=parseFloat((boundaries.maxLng+block).toFixed(digits)); j+=block) {
+          var LNG=parseFloat(j.toFixed(digits));
+          var point=[LAT, LNG];
+
+          //check if each point in polygon
+          if (pointInPoly(point, layer._latlngs)) {
+            var strPoint=JSON.stringify(point)
+            allTags[strPoint]=allTags[strPoint] || {};
+            var tags=layer.label._content.split(', ');
+            for (var k=0; k<tags.length; k++) {
+              var tag=tags[k];
+              //if point in poly, add point to dictionary and extend values of tags
+              allTags[strPoint][tag] = allTags[strPoint][tag]+1 || 1;
+            }
+          }
+        }
+      }
+
+    }
+
+  }
+  return allTags;
+}
+
