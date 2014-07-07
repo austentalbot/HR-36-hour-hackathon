@@ -94,3 +94,10 @@ document.getElementById("addTag").addEventListener('click', function(){
   }
   layer.bindLabel(tags);
 }, false);
+
+//save tags
+document.getElementById("saveTags").addEventListener('click', function(){
+  //loop over all layers from drawn items
+  //pull out all tags
+  //save coords in a list and tags in a list
+}, false);
