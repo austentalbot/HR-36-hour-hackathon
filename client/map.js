@@ -12,6 +12,13 @@
 //set up global variables
 var selectedLayerId;
 
+var highlight = {
+  'color': '#03606B'
+};
+
+var defaultShape = {
+  'color': '#DB5A55'
+};
 
 //set map height
 var height=document.body.scrollHeight-50;
@@ -28,6 +35,12 @@ map.addLayer(drawnItems);
 // Initialise the draw control and pass it the FeatureGroup of editable layers
 var drawControl = new L.Control.Draw({
   draw: {
+    polygon: {
+      shapeOptions: highlight
+    },
+    rectangle: {
+      shapeOptions: highlight
+    },
     polyline : false,
     circle : false,
     marker: false
@@ -46,8 +59,21 @@ map.on('draw:created', function (e) {
     map.addLayer(layer);
     drawnItems.addLayer(layer);
     layer.on('click', function(e) {
+      //unhighlight old layer
+      drawnItems._layers[selectedLayerId].setStyle(defaultShape);
+
+      //switch selected layer to layer which has just been clicked
       selectedLayerId=e.target._leaflet_id;
+      
+      //highlight layer
+      layer.setStyle(highlight);
     });
+
+    //highlight and select layer
+    if (selectedLayerId!==undefined) {
+      drawnItems._layers[selectedLayerId].setStyle(defaultShape);
+    }
+    selectedLayerId=layer._leaflet_id;
 });
 
 map.on('draw:edited', function (e) {
