@@ -2,6 +2,7 @@ var mongodb = require("mongodb");
 var fs=require('fs');
 var path=require('path');
 var url=require('url');
+var _=require('underscore');
 
 var server = new mongodb.Server("127.0.0.1", 27017, {});
 var client = new mongodb.Db('coordinates', server);
@@ -44,24 +45,42 @@ exports.handleRequest = function (req, res) {
     req.on('data', function(chunk) {
       var data=JSON.parse(chunk.toString());
 
-      // client.open
-      // client.collection("labels", function(err, col) {
-      //   col.insert({c:'test'}, function() {
-      //     col.findOne({}, function(err, results) {
-      //       if (err) {
-      //         throw err
-      //       } else {
-      //         console.log(results);
-      //       }
-      //     });
+      client.collection("labels", function(err, col) {
+        //loop over each coordinate in collection
+        //if coordinate does not exist, add it and its contents
+        //if coordinate does exist, increment contents
 
-      //   });
-      // });
+        for (var coord in data) {
+          (function(coord) {
+            col.findOne({latlng: coord}, function(err, results) {
+              if (err) {
+                throw err;
+              }
+              else {
+                if (results===null) {
+                  results={latlng: coord};
+                  _.extend(results, data[coord]);
+                  col.save(results, function(err) {
+                    if (err) {
+                      throw err;
+                    } 
+                  });
+                } else {
+                  for (var label in data[coord]) {
+                    results[label] = results[label] + data[coord][label] || data[coord][label];
+                  }
+                  col.save(results, function(err) {
+                    if (err) {
+                      throw err;
+                    }
+                  });
+                }
+              }
+            });
+          })(coord);
+        }
+      });
 
-
-      for (var coord in data) {
-        console.log(coord, data[coord]);
-      }
       res.writeHead(201, headers);
       res.end();
     });
