@@ -9,6 +9,10 @@
 -Create community map with tags (by size) based on popularity in area
 */
 
+//set up global variables
+var selectedLayerId;
+
+
 //set map height
 var height=document.body.scrollHeight-50;
 document.getElementById("map").style.height=height.toString()+'px'
@@ -52,3 +56,15 @@ map.on('draw:edited', function (e) {
       //do whatever you want, most likely save back to db
     });
 });
+
+//add tag to object
+document.getElementById("addTag").addEventListener('click', function(){
+  var tag=document.getElementById('tagInput').value;
+  var layer=drawnItems._layers[selectedLayerId];
+  if (layer.label!==undefined) {
+    tags=layer.label._content+', '+tag;
+  } else {
+    tags=tag;
+  }
+  layer.bindLabel(tags);
+}, false);
