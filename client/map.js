@@ -12,10 +12,15 @@
 //set up global variables
 var selectedLayerId;
 
+//set increment for lat/lng granularity
+var block=.001;
+var conversion=1000
+var digits=3;
+
+//formats
 var highlight = {
   'color': '#03606B'
 };
-
 var defaultShape = {
   'color': '#DB5A55'
 };
@@ -101,6 +106,10 @@ document.getElementById("saveTags").addEventListener('click', function(){
   //get all tags from page
   var tags=createTags();
   //save tags into mongo
+  var request = new XMLHttpRequest();
+  request.open('POST', '/', true);
+  request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+  request.send(JSON.stringify(tags));
 
   //clear all layers
   for (var layer in drawnItems._layers) {
@@ -108,6 +117,33 @@ document.getElementById("saveTags").addEventListener('click', function(){
   }
   selectedLayerId=undefined;
 }, false);
+
+
+var findBoundaries=function(coordArr) {
+  var boundaries={
+    minLat: undefined,
+    minLng: undefined,
+    maxLat: undefined,
+    maxLng: undefined
+  };
+  for (var c=0; c<coordArr.length; c++) {
+    var coordinates=coordArr[c];
+    if (coordinates.lat<boundaries.minLat || boundaries.minLat===undefined) {
+      boundaries.minLat=coordinates.lat;
+    }
+    if (coordinates.lat>boundaries.maxLat || boundaries.maxLat===undefined) {
+      boundaries.maxLat=coordinates.lat;
+    }
+    if (coordinates.lng<boundaries.minLng || boundaries.minLng===undefined) {
+      boundaries.minLng=coordinates.lng;
+    }
+    if (coordinates.lng>boundaries.maxLng || boundaries.maxLng===undefined) {
+      boundaries.maxLng=coordinates.lng;
+    }
+  }
+  return boundaries;
+};
+
 
 var pointInPoly= function (point, polygon) {
   var convertToCoords=function(coordinates) {

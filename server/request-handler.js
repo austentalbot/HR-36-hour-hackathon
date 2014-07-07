@@ -4,8 +4,17 @@ var path=require('path');
 var url=require('url');
 
 var server = new mongodb.Server("127.0.0.1", 27017, {});
-var client = new mongodb.Db('database', server);
+var client = new mongodb.Db('coordinates', server);
 var collection;
+
+client.open(function(err, p_client) {
+  console.log("Connected to MongoDB!");
+  client.createCollection('labels', function(err, collection) {
+  });
+});
+
+
+
 
 
 exports.handleRequest = function (req, res) {
@@ -32,7 +41,30 @@ exports.handleRequest = function (req, res) {
       var fileStream = fs.createReadStream(fileName);
       fileStream.pipe(res);
   } else if (req.method==='POST') {
-    
+    req.on('data', function(chunk) {
+      var data=JSON.parse(chunk.toString());
+
+      // client.open
+      // client.collection("labels", function(err, col) {
+      //   col.insert({c:'test'}, function() {
+      //     col.findOne({}, function(err, results) {
+      //       if (err) {
+      //         throw err
+      //       } else {
+      //         console.log(results);
+      //       }
+      //     });
+
+      //   });
+      // });
+
+
+      for (var coord in data) {
+        console.log(coord, data[coord]);
+      }
+      res.writeHead(201, headers);
+      res.end();
+    });
   }
 };
 
