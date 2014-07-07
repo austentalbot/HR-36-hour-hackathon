@@ -28,6 +28,9 @@ body {
   background: #6AA8A5;
   color: #FEF2D8;
 }
+#addTag:active, #saveTags:active {
+  background: #03606B;
+}
 #addTag {
   position: absolute;
   top: 0px;
@@ -38,7 +41,7 @@ body {
   top: 5px;
   left: 110px; 
   height: 35px;
-  width: 250px;
+  width: 240px;
   line-height: 35px;
   background: #FEF2D8;
   color: #6AA8A5;

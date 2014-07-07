@@ -210,3 +210,19 @@ var createTags=function() {
   return allTags;
 }
 
+//CREATE COMMUNITY MAP WHEN COMMUNITY MAP BUTTON CLICKED
+document.getElementById("communityMap").addEventListener('click', function(){
+  //switch colors for two buttons
+  document.getElementById("personalMap").style.background='#F28D7A';
+  document.getElementById("communityMap").style.background='#DB5A55';
+});
+
+document.getElementById("personalMap").addEventListener('click', function(){
+  //switch colors for two buttons
+  document.getElementById("personalMap").style.background='#DB5A55';
+  document.getElementById("communityMap").style.background='#F28D7A';
+});
+
+
+
+
