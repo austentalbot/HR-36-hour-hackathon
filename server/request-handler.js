@@ -5,7 +5,21 @@ var url=require('url');
 var _=require('underscore');
 var sentiment=require('sentiment');
 
-var server = new mongodb.Server("127.0.0.1", 27017, {});
+
+var MongoClient = require('mongodb').MongoClient;
+    var connectionString = process.env['MongoConnectionString'];
+    MongoClient.connect(connectionString, function(err, db)
+
+
+if (process.env['MongoConnectionString']!==undefined) {
+  var server = mongodb.MongoClient.connect(process.env['MongoConnectionString'], function(err, db) {
+    if (err) {
+      throw err;
+    }
+  });
+} else {
+  var server = new mongodb.Server("127.0.0.1", 27017, {});
+}
 var client = new mongodb.Db('coordinates', server);
 var collection;
 
@@ -35,6 +49,8 @@ var pickMostPopular = function(arr) {
   return results;
 };
 
+
+// client.getCollection('labels').drop()
 
 client.open(function(err, p_client) {
   console.log("Connected to MongoDB!");

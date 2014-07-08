@@ -29,6 +29,7 @@ var defaultShape = {
 var height=document.body.scrollHeight-75;
 document.getElementById("map").style.height=height.toString()+'px'
 
+
 //initialize map to SF
 var map = L.map('map').setView([37.789, -122.414], 14);
 L.tileLayer('http://api.tiles.mapbox.com/v3/austentalbot.gfeh9hg8/{z}/{x}/{y}.png', {maxZoom: 18}).addTo(map);
