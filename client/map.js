@@ -215,6 +215,38 @@ document.getElementById("communityMap").addEventListener('click', function(){
   //switch colors for two buttons
   document.getElementById("personalMap").style.background='#F28D7A';
   document.getElementById("communityMap").style.background='#DB5A55';
+
+  //clear all layers
+  for (var layer in drawnItems._layers) {
+    drawnItems.removeLayer(drawnItems._layers[layer]);
+  }
+  selectedLayerId=undefined;
+
+  //get tags from server and filter to most popular
+  request = new XMLHttpRequest();
+  request.open('GET', '/data', true);
+
+  request.onload = function() {
+    if (request.status >= 200 && request.status < 400){
+      // Success!
+      resp = request.responseText;
+    } 
+  };
+
+  request.onerror = function() {
+    console.log('There was an error in sending your request.');
+  };
+
+  request.send();
+
+
+
+
+  //repopulate map with most popular tags
+
+
+
+
 });
 
 document.getElementById("personalMap").addEventListener('click', function(){

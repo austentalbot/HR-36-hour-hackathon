@@ -8,6 +8,28 @@ var server = new mongodb.Server("127.0.0.1", 27017, {});
 var client = new mongodb.Db('coordinates', server);
 var collection;
 
+var pickMostPopular = function(arr) {
+  console.log(arr);
+  var results={};
+  for (var i=0; i<arr.length; i++) {
+    var max=0;
+    var maxKey;
+
+    for (var key in arr[i]) {
+      if (key!=='_id' && key!=='latlng') {
+        console.log(key);
+        if (arr[i][key] > max) {
+          max=arr[i][key];
+          maxKey=key;
+        }
+      }
+    }
+    results[arr[i]['latlng']]=maxKey;
+  }
+  return results;
+};
+
+
 client.open(function(err, p_client) {
   console.log("Connected to MongoDB!");
   client.createCollection('labels', function(err, collection) {
@@ -30,13 +52,29 @@ exports.handleRequest = function (req, res) {
     res.writeHead(200, headers)
     res.end();
   } else if (req.method==='GET') {
-    if (pathname==='/') {
+    if (pathname==='/data') {
+      //get and return the data
+      headers['Content-Type']='application/json';
+      res.writeHead(201, headers);
+
+      client.collection("labels", function(err, col) {
+        col.find({}, function(err, results) {
+          results.toArray(function(err, data) {
+            res.end(JSON.stringify(pickMostPopular(data)));
+          });
+        });
+      });
+
+    } else if (pathname==='/') {
       var fileName=path.join(process.cwd(), './client', 'index.html');
-    } else {
-      var fileName=path.join(process.cwd(), './client', pathname);
-    }
       var fileStream = fs.createReadStream(fileName);
       fileStream.pipe(res);
+    
+    } else {
+      var fileName=path.join(process.cwd(), './client', pathname);
+      var fileStream = fs.createReadStream(fileName);
+      fileStream.pipe(res);
+    }
   } else if (req.method==='POST') {
     req.on('data', function(chunk) {
       var data=JSON.parse(chunk.toString());
