@@ -24,13 +24,19 @@
 
     <div class='buttons' >
       <div id='addTag' ng-click='addTag()'>Add Tag</div>
+      <div id='addLabel'>Tag your area</div>
       <input type='text' ng-model='tag' id='tagInput' placeholder='enter a microhood tag here'/>
       <div id='saveTags' ng-click='saveTags()'>Save Tags</div>
+      <div id='saveLabel'>Save areas and tags</div>
       <div id='title'>MICROHOODS</div>
       <div id='personalMap' ng-click='personalSwitch()'>Personal Map</div>
+      <div id='personalLabel'>Create your own microhoods</div>
       <div id='communityMap' ng-click='communitySwitch()'>Community Map</div>
+      <div id='communityLabel'>See community microhoods</div>
 
     </div>
+
+
     <div id="map"></div>
     
     <img id='questionMark' src="question-mark.png">
