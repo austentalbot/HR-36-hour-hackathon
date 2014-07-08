@@ -19,6 +19,9 @@ body {
   width: 100%;
   height: 50px;
   background: #FEF2D8;
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
 }
 #addTag, #saveTags, #tagInput, #communityMap, #personalMap {
   width: 100px;
@@ -82,6 +85,8 @@ body {
   bottom: 0px;
   height: 15px;
   width: 100%;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
 }
 #good4, #good3, #good2, #good1, #neutral, #bad1, #bad2, #bad3, #bad4 {
   position: absolute;
@@ -136,5 +141,31 @@ body {
   width: 11.1112%;
   background: #A6412E;
   text-align: right;
+}
+#questionMark {
+  position: absolute;
+  top: 50px;
+  right: 0px;
+}
+#about {
+  padding: 10px;
+  position: absolute;
+  top: 75px;
+  right: 25px;
+  height:230px;
+  width: 210px;
+  background: #FEF2D8;
+  color: #6AA8A5;
+  border-radius: 5px;
+  display: none;
+  opacity: .8;
+}
+#questionMark:hover + #about {
+  display: block;
+}
+p {
+  margin: 0;
+  padding: 0;
+  padding-bottom: 5px;
 }
 
