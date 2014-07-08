@@ -51,7 +51,7 @@ var app = angular.module('map-app', [])
           if (coord!=='undefined') {
             var label=allCoords[coord]['label'];
             var sent=allCoords[coord]['sentiment'];
-            L.circleMarker(JSON.parse(coord), {color: sentimentColors(sent), opacity: .9}).setRadius(5).addTo(map).bindLabel(label+' ('+sent+')');
+            L.circleMarker(JSON.parse(coord), {color: sentimentColors(sent), opacity: .9}).setRadius(5).addTo(map).bindLabel(label+' ('+sent.toFixed(1)+')');
           }
         }
       } 
