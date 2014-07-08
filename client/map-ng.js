@@ -51,7 +51,7 @@ var app = angular.module('map-app', [])
           if (coord!=='undefined') {
             var label=allCoords[coord]['label'];
             var sent=allCoords[coord]['sentiment'];
-            L.circleMarker(JSON.parse(coord), {color: sentimentColors(sent), opacity: .9}).setRadius(5).addTo(map).bindLabel(label);
+            L.circleMarker(JSON.parse(coord), {color: sentimentColors(sent), opacity: .9}).setRadius(5).addTo(map).bindLabel(label+' ('+sent+')');
           }
         }
       } 
@@ -258,17 +258,17 @@ var createTags=function() {
 var sentimentColors = function (num) {
   if (num>3) {
     return '#1E5C59';
-  } else if (num>1) {
+  } else if (num>2) {
     return '#377572';
-  } else if (num>.5) {
+  } else if (num>1) {
     return '#518F8C';
-  } else if (num>.1) {
+  } else if (num>.3) {
     return '#6AA8A5';
-  } else if (num>=.1) {
+  } else if (num>=-.3) {
     return '#7f8c8d'
-  } else if (num>=-.5) {
-    return '#F28D7A';
   } else if (num>=-1) {
+    return '#F28D7A';
+  } else if (num>=-2) {
     return '#D97461';
   } else if (num>=-3) {
     return '#BF5A47';
