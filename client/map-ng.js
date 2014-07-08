@@ -14,20 +14,19 @@ var app = angular.module('map-app', [])
     }
   };
   $scope.saveTags=function() {
-    saveTags();
-    // //get all tags from page
-    // var tags=createTags();
-    // //save tags into mongo
-    // var request = new XMLHttpRequest();
-    // request.open('POST', '/', true);
-    // request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-    // request.send(JSON.stringify(tags));
+    //get all tags from page
+    var tags=createTags();
+    //save tags into mongo
+    var request = new XMLHttpRequest();
+    request.open('POST', '/', true);
+    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+    request.send(JSON.stringify(tags));
 
-    // //clear all layers
-    // for (var layer in drawnItems._layers) {
-    //   drawnItems.removeLayer(drawnItems._layers[layer]);
-    // }
-    // selectedLayerId=undefined;
+    //clear all layers
+    for (var layer in drawnItems._layers) {
+      drawnItems.removeLayer(drawnItems._layers[layer]);
+    }
+    selectedLayerId=undefined;
   };
   $scope.communitySwitch=function() {
     //switch colors for two buttons
@@ -76,25 +75,6 @@ var app = angular.module('map-app', [])
     selectedLayerId=undefined;
   };
 });
-
-var saveTags=function() {
-  //get all tags from page
-  var tags=createTags();
-  //save tags into mongo
-  var request = new XMLHttpRequest();
-  request.open('POST', '/', true);
-  request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-  request.send(JSON.stringify(tags));
-
-  //clear all layers
-  for (var layer in drawnItems._layers) {
-    drawnItems.removeLayer(drawnItems._layers[layer]);
-  }
-  selectedLayerId=undefined;
-}
-
-
-
 
 //set up global variables
 var selectedLayerId;

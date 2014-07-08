@@ -7,7 +7,8 @@ var sentiment=require('sentiment');
 var MongoClient=require('mongodb').MongoClient;
 
 
-var address = process.env['MongoConnectionString'] || 'mongodb://localhost/coordinates';
+// var address = process.env['MongoConnectionString'] || 'mongodb://localhost/coordinates';
+var address='mongodb://MongoLab-f:G.OhGTQEnWgCtzt94fcVhxq6p7GwkMI7YJG1LRhAnhU-@ds050077.mongolab.com:50077/MongoLab-f'
 var client;
 MongoClient.connect(address, function(err, db) {
   if (err) {
