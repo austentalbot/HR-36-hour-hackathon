@@ -90,16 +90,23 @@ exports.handleRequest = function (req, res) {
       fileStream.pipe(res);
     }
   } else if (req.method==='POST') {
+    console.log('in POST request');
+
     req.on('data', function(chunk) {
+      console.log('receiving data');
       var data=JSON.parse(chunk.toString());
+      console.log('data passed in', data);
 
       client.collection("labels", function(err, col) {
         //loop over each coordinate in collection
         //if coordinate does not exist, add it and its contents
         //if coordinate does exist, increment contents
+        console.log('connected to labels');
         for (var coord in data) {
           (function(coord) {
             col.findOne({latlng: coord}, function(err, results) {
+              console.log('finding coordinates');
+
               if (err) {
                 console.error(err);
                 throw err;
@@ -109,6 +116,7 @@ exports.handleRequest = function (req, res) {
                   results={latlng: coord};
                   _.extend(results, data[coord]);
                   col.save(results, function(err) {
+                    console.log('saving new coordinates');
                     if (err) {
                       console.error(err);
                       throw err;
@@ -119,6 +127,7 @@ exports.handleRequest = function (req, res) {
                     results[label] = results[label] + data[coord][label] || data[coord][label];
                   }
                   col.save(results, function(err) {
+                    console.log('saving updated coordinates');
                     if (err) {
                       console.error(err);
                       throw err;
