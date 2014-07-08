@@ -276,6 +276,15 @@ document.getElementById("personalMap").addEventListener('click', function(){
   //switch colors for two buttons
   document.getElementById("personalMap").style.background='#DB5A55';
   document.getElementById("communityMap").style.background='#F28D7A';
+
+  //clear all layers
+  for (var layer in map._layers) {
+    if (layer!=='22' && layer!=='24') {
+      map.removeLayer(map._layers[layer]);
+    }
+  }
+  selectedLayerId=undefined;
+
 });
 
 
