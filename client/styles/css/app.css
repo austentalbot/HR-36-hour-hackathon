@@ -49,8 +49,8 @@ body {
   background: #FEF2D8;
   color: #6AA8A5;
   text-align: left;
-  font-size: 16px;
-  font-weight: normal;
+  font-size: 14px;
+  font-weight: 100;
 }
 #saveTags {
   position: absolute;
@@ -171,7 +171,7 @@ p {
   padding-bottom: 5px;
   text-align: justify;
 }
-#addLabel, #saveLabel, #personalLabel, #communityLabel {
+#addLabel, #saveLabel, #personalLabel, #communityLabel, #directions {
   font-size: 12px;
   position:absolute;
   top: 50px;
@@ -218,7 +218,18 @@ p {
   opacity: .8;
   transition:opacity 0.4s linear;
 }
-
+#directions { 
+  font-size: 22px;
+  min-height: 20px;
+  height: 120%;
+  width: 100%;
+  left: 0;
+}
+#title:hover + #directions {
+  visibility: visible;
+  opacity: .8;
+  transition:opacity 0.4s linear; 
+}
 
 
 
