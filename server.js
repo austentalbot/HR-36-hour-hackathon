@@ -1,5 +1,5 @@
 var http = require("http");
-var handler = require("./server/request-handler-ng");
+var handler = require("./server/request-handler-ng-azure");
 var port=process.env.PORT || 4568;
 
 var server = http.createServer(handler.handleRequest);

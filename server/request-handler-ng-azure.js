@@ -4,11 +4,23 @@ var path=require('path');
 var url=require('url');
 var _=require('underscore');
 var sentiment=require('sentiment');
+var MongoClient=require('mongodb').MongoClient;
 
-var address = process.env['MongoConnectionString'] || '127.0.0.1';
-var server = new mongodb.Server(address, 27017, {});
-var client = new mongodb.Db('coordinates', server);
-var collection;
+
+var address = process.env['MongoConnectionString'] || 'mongodb://localhost:27017/coordinates';
+var client;
+MongoClient.connect(address, function(err, db) {
+  if (err) {
+    throw err;
+  }
+  console.log('connected to mongo');
+  db.createCollection('labels', function(err, collection) {
+    if (err) {
+      throw err;
+    }
+  }); 
+  client=db;
+});
 
 var pickMostPopular = function(arr) {
   console.log(arr);
@@ -36,13 +48,6 @@ var pickMostPopular = function(arr) {
   return results;
 };
 
-// client.getCollection('labels').drop()
-
-client.open(function(err, p_client) {
-  console.log("Connected to MongoDB!");
-  client.createCollection('labels', function(err, collection) {
-  });
-});
 
 exports.handleRequest = function (req, res) {
   var headers={
