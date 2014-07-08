@@ -6,20 +6,8 @@ var _=require('underscore');
 var sentiment=require('sentiment');
 
 
-var MongoClient = require('mongodb').MongoClient;
-    var connectionString = process.env['MongoConnectionString'];
-    MongoClient.connect(connectionString, function(err, db)
-
-
-if (process.env['MongoConnectionString']!==undefined) {
-  var server = mongodb.MongoClient.connect(process.env['MongoConnectionString'], function(err, db) {
-    if (err) {
-      throw err;
-    }
-  });
-} else {
-  var server = new mongodb.Server("127.0.0.1", 27017, {});
-}
+var address = process.env['MongoConnectionString'] || '127.0.0.1';
+var server = new mongodb.Server(address, 27017, {});
 var client = new mongodb.Db('coordinates', server);
 var collection;
 
