@@ -66,4 +66,64 @@ body {
   right: 0px;
   background: #F28D7A;
 }
+#colors {
+  position: absolute;
+  bottom: 0px;
+  height: 15px;
+  width: 100%;
+}
+#good4, #good3, #good2, #good1, #neutral, #bad1, #bad2, #bad3, #bad4 {
+  position: absolute;
+  height: 15px;
+  color: #FEF2D8;
+  line-height: 15px;
+}
+#good4 {
+  left: 0%;
+  width: 11.1111%;
+  background: #1E5C59;
+
+}
+#good3 {
+  left: 11.1111%;
+  width: 11.1111%;
+  background: #377572;
+}
+#good2 {
+  left: 22.2222%;
+  width: 11.1111%;
+  background: #518F8C;
+}
+#good1 {
+  left: 33.3333%;
+  width: 11.1111%;
+  background: #6AA8A5;
+}
+#neutral {
+  left: 44.4444%;
+  width: 11.1111%;
+  background: #7f8c8d;
+  text-align: center;
+}
+#bad1 {
+  left: 55.5555%;
+  width: 11.1111%;
+  background: #F28D7A;
+}
+#bad2 {
+  left: 66.6666%;
+  width: 11.1111%;
+  background: #D97461;
+}
+#bad3 {
+  left: 77.7777%;
+  width: 11.1111%;
+  background: #BF5A47;
+}
+#bad4 {
+  left: 88.8888%;
+  width: 11.1112%;
+  background: #A6412E;
+  text-align: right;
+}
 

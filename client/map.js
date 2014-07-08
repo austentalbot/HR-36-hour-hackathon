@@ -26,7 +26,7 @@ var defaultShape = {
 };
 
 //set map height
-var height=document.body.scrollHeight-75;
+var height=document.body.scrollHeight-65;
 document.getElementById("map").style.height=height.toString()+'px'
 
 
@@ -218,13 +218,13 @@ var sentimentColors = function (num) {
   } else if (num>1) {
     return '#377572';
   } else if (num>.5) {
-    return '#6AA8A5';
-  } else if (num>.1) {
     return '#518F8C';
+  } else if (num>.1) {
+    return '#6AA8A5';
   } else if (num>=.1) {
-    return '#F28D7A'
+    return '#7f8c8d'
   } else if (num>=-.5) {
-    return '#7f8c8d';
+    return '#F28D7A';
   } else if (num>=-1) {
     return '#D97461';
   } else if (num>=-3) {
