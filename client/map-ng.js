@@ -9,6 +9,84 @@
 -Create community map with tags (by size) based on popularity in area
 */
 
+var app = angular.module('map-app', [])
+.controller('map-controller', function($scope) {
+  $scope.addTag=function () {
+    var tag=document.getElementById('tagInput').value;
+    var layer=drawnItems._layers[selectedLayerId];
+    if (layer.label!==undefined) {
+      tags=layer.label._content+', '+tag;
+    } else {
+      tags=tag;
+    }
+    layer.bindLabel(tags);
+    document.getElementById('tagInput').value='';  
+  };
+  $scope.saveTags=function() {
+    //get all tags from page
+    var tags=createTags();
+    //save tags into mongo
+    var request = new XMLHttpRequest();
+    request.open('POST', '/', true);
+    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+    request.send(JSON.stringify(tags));
+
+    //clear all layers
+    for (var layer in drawnItems._layers) {
+      drawnItems.removeLayer(drawnItems._layers[layer]);
+    }
+    selectedLayerId=undefined;
+  };
+  $scope.communitySwitch=function() {
+    //switch colors for two buttons
+    document.getElementById("personalMap").style.background='#F28D7A';
+    document.getElementById("communityMap").style.background='#DB5A55';
+
+    //clear all layers
+    for (var layer in drawnItems._layers) {
+      drawnItems.removeLayer(drawnItems._layers[layer]);
+    }
+    selectedLayerId=undefined;
+
+    //get tags from server and filter to most popular
+    request = new XMLHttpRequest();
+    request.open('GET', '/data', true);
+
+    request.onload = function() {
+      if (request.status >= 200 && request.status < 400){
+        //repopulate map with most popular tags
+        var allCoords=JSON.parse(request.responseText);
+        for (var coord in allCoords) {
+          if (coord!=='undefined') {
+            var label=allCoords[coord]['label'];
+            var sent=allCoords[coord]['sentiment'];
+            L.circleMarker(JSON.parse(coord), {color: sentimentColors(sent), opacity: .9}).setRadius(5).addTo(map).bindLabel(label);
+          }
+        }
+      } 
+    };
+
+    request.onerror = function() {
+      console.log('There was an error in sending your request.');
+    };
+
+    request.send();
+  };
+  $scope.personalSwitch=function() {
+    //switch colors for two buttons
+    document.getElementById("personalMap").style.background='#DB5A55';
+    document.getElementById("communityMap").style.background='#F28D7A';
+
+    //clear all layers
+    for (var layer in map._layers) {
+      if (layer!=='22' && layer!=='24') {
+        map.removeLayer(map._layers[layer]);
+      }
+    }
+    selectedLayerId=undefined;
+  };
+});
+
 //set up global variables
 var selectedLayerId;
 
@@ -88,36 +166,6 @@ map.on('draw:edited', function (e) {
       //do whatever you want, most likely save back to db
     });
 });
-
-//add tag to object
-document.getElementById("addTag").addEventListener('click', function(){
-  var tag=document.getElementById('tagInput').value;
-  var layer=drawnItems._layers[selectedLayerId];
-  if (layer.label!==undefined) {
-    tags=layer.label._content+', '+tag;
-  } else {
-    tags=tag;
-  }
-  layer.bindLabel(tags);
-  document.getElementById('tagInput').value='';
-}, false);
-
-//save tags
-document.getElementById("saveTags").addEventListener('click', function(){
-  //get all tags from page
-  var tags=createTags();
-  //save tags into mongo
-  var request = new XMLHttpRequest();
-  request.open('POST', '/', true);
-  request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-  request.send(JSON.stringify(tags));
-
-  //clear all layers
-  for (var layer in drawnItems._layers) {
-    drawnItems.removeLayer(drawnItems._layers[layer]);
-  }
-  selectedLayerId=undefined;
-}, false);
 
 
 var findBoundaries=function(coordArr) {
@@ -233,60 +281,4 @@ var sentimentColors = function (num) {
     return '#A6412E';
   }
 };
-
-//CREATE COMMUNITY MAP WHEN COMMUNITY MAP BUTTON CLICKED
-document.getElementById("communityMap").addEventListener('click', function(){
-  //switch colors for two buttons
-  document.getElementById("personalMap").style.background='#F28D7A';
-  document.getElementById("communityMap").style.background='#DB5A55';
-
-  //clear all layers
-  for (var layer in drawnItems._layers) {
-    drawnItems.removeLayer(drawnItems._layers[layer]);
-  }
-  selectedLayerId=undefined;
-
-  //get tags from server and filter to most popular
-  request = new XMLHttpRequest();
-  request.open('GET', '/data', true);
-
-  request.onload = function() {
-    if (request.status >= 200 && request.status < 400){
-      //repopulate map with most popular tags
-      var allCoords=JSON.parse(request.responseText);
-      for (var coord in allCoords) {
-        if (coord!=='undefined') {
-          var label=allCoords[coord]['label'];
-          var sent=allCoords[coord]['sentiment'];
-          L.circleMarker(JSON.parse(coord), {color: sentimentColors(sent), opacity: .9}).setRadius(5).addTo(map).bindLabel(label);
-        }
-      }
-    } 
-  };
-
-  request.onerror = function() {
-    console.log('There was an error in sending your request.');
-  };
-
-  request.send();
-
-});
-
-document.getElementById("personalMap").addEventListener('click', function(){
-  //switch colors for two buttons
-  document.getElementById("personalMap").style.background='#DB5A55';
-  document.getElementById("communityMap").style.background='#F28D7A';
-
-  //clear all layers
-  for (var layer in map._layers) {
-    if (layer!=='22' && layer!=='24') {
-      map.removeLayer(map._layers[layer]);
-    }
-  }
-  selectedLayerId=undefined;
-
-});
-
-
-
 
