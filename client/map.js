@@ -26,7 +26,7 @@ var defaultShape = {
 };
 
 //set map height
-var height=document.body.scrollHeight-50;
+var height=document.body.scrollHeight-75;
 document.getElementById("map").style.height=height.toString()+'px'
 
 //initialize map to SF
@@ -210,6 +210,29 @@ var createTags=function() {
   return allTags;
 }
 
+//set up various colors for markers based on sentiment -5 through 5
+var sentimentColors = function (num) {
+  if (num>3) {
+    return '#1E5C59';
+  } else if (num>1) {
+    return '#377572';
+  } else if (num>.5) {
+    return '#6AA8A5';
+  } else if (num>.1) {
+    return '#518F8C';
+  } else if (num>=.1) {
+    return '#F28D7A'
+  } else if (num>=-.5) {
+    return '#7f8c8d';
+  } else if (num>=-1) {
+    return '#D97461';
+  } else if (num>=-3) {
+    return '#BF5A47';
+  } else {
+    return '#A6412E';
+  }
+};
+
 //CREATE COMMUNITY MAP WHEN COMMUNITY MAP BUTTON CLICKED
 document.getElementById("communityMap").addEventListener('click', function(){
   //switch colors for two buttons
@@ -228,8 +251,15 @@ document.getElementById("communityMap").addEventListener('click', function(){
 
   request.onload = function() {
     if (request.status >= 200 && request.status < 400){
-      // Success!
-      resp = request.responseText;
+      //repopulate map with most popular tags
+      var allCoords=JSON.parse(request.responseText);
+      for (var coord in allCoords) {
+        if (coord!=='undefined') {
+          var label=allCoords[coord]['label'];
+          var sent=allCoords[coord]['sentiment'];
+          L.circleMarker(JSON.parse(coord), {color: sentimentColors(sent), opacity: .9}).setRadius(5).addTo(map).bindLabel(label);
+        }
+      }
     } 
   };
 
@@ -238,14 +268,6 @@ document.getElementById("communityMap").addEventListener('click', function(){
   };
 
   request.send();
-
-
-
-
-  //repopulate map with most popular tags
-
-
-
 
 });
 

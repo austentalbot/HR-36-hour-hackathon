@@ -8,6 +8,7 @@
     "mongodb": "^1.4.7",
     "mongoose": "*",
     "q": "*",
+    "sentiment": "^1.0.1",
     "underscore": "^1.6.0"
   },
   "devDependencies": {

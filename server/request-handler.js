@@ -3,6 +3,7 @@ var fs=require('fs');
 var path=require('path');
 var url=require('url');
 var _=require('underscore');
+var sentiment=require('sentiment');
 
 var server = new mongodb.Server("127.0.0.1", 27017, {});
 var client = new mongodb.Db('coordinates', server);
@@ -16,15 +17,20 @@ var pickMostPopular = function(arr) {
     var maxKey;
 
     for (var key in arr[i]) {
+      var sentimentStr='';
       if (key!=='_id' && key!=='latlng') {
-        console.log(key);
+        for (var iterations=0; iterations<arr[i][key]; iterations++) {
+          sentimentStr=sentimentStr+key+' ';
+        }
         if (arr[i][key] > max) {
           max=arr[i][key];
           maxKey=key;
         }
       }
+      //perform sentiment analysis
+      var sent=sentiment(sentimentStr)['comparative'];
     }
-    results[arr[i]['latlng']]=maxKey;
+    results[arr[i]['latlng']]={'label': maxKey, 'sentiment': sent};
   }
   return results;
 };
