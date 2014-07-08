@@ -92,10 +92,14 @@ exports.handleRequest = function (req, res) {
   } else if (req.method==='POST') {
     console.log('in POST request');
 
+    var dataStr='';
     req.on('data', function(chunk) {
       console.log('receiving data');
-      var data=JSON.parse(chunk.toString());
-      console.log('data passed in', data);
+      dataStr+=chunk;
+    });
+
+    req.on('end', function() {
+      var data=JSON.parse(dataStr);
 
       client.collection("labels", function(err, col) {
         //loop over each coordinate in collection
