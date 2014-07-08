@@ -3,10 +3,11 @@
   "version": "0.0.1",
   "dependencies": {
     "bootstrap-css-only": "*",
-    "angular": "*" ,
+    "angular": "*",
     "angular-cookies": "*",
     "ng-Fx": "*",
-    "angular-ui-router": "*"
+    "angular-ui-router": "*",
+    "backbone": "~1.1.2",
+    "jquery": "~2.1.1"
   }
 }
-
