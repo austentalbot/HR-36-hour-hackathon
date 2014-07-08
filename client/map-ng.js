@@ -1,26 +1,17 @@
-/*
--Create new maps
--Add layers to map
--Add tags to each layer
--Button to save tags
-  -Save tags and coordinates in Mongo
-
--Aggregate tags for given coordinates (find most popular by lat $ lon)
--Create community map with tags (by size) based on popularity in area
-*/
-
 var app = angular.module('map-app', [])
 .controller('map-controller', function($scope) {
+  $scope.tag='';
   $scope.addTag=function () {
-    var tag=document.getElementById('tagInput').value;
-    var layer=drawnItems._layers[selectedLayerId];
-    if (layer.label!==undefined) {
-      tags=layer.label._content+', '+tag;
-    } else {
-      tags=tag;
+    if (drawnItems._layers[selectedLayerId]) {    
+      var layer=drawnItems._layers[selectedLayerId];
+      if (layer.label!==undefined) {
+        tags=layer.label._content+', '+$scope.tag;
+      } else {
+        tags=$scope.tag
+      }
+      layer.bindLabel(tags);
+      $scope.tag='';
     }
-    layer.bindLabel(tags);
-    document.getElementById('tagInput').value='';  
   };
   $scope.saveTags=function() {
     //get all tags from page
@@ -65,11 +56,9 @@ var app = angular.module('map-app', [])
         }
       } 
     };
-
     request.onerror = function() {
       console.log('There was an error in sending your request.');
     };
-
     request.send();
   };
   $scope.personalSwitch=function() {
@@ -107,7 +96,6 @@ var defaultShape = {
 var height=document.body.scrollHeight-65;
 document.getElementById("map").style.height=height.toString()+'px'
 
-
 //initialize map to SF
 var map = L.map('map').setView([37.789, -122.414], 14);
 L.tileLayer('http://api.tiles.mapbox.com/v3/austentalbot.gfeh9hg8/{z}/{x}/{y}.png', {maxZoom: 18}).addTo(map);
@@ -144,7 +132,9 @@ map.on('draw:created', function (e) {
     drawnItems.addLayer(layer);
     layer.on('click', function(e) {
       //unhighlight old layer
-      drawnItems._layers[selectedLayerId].setStyle(defaultShape);
+      if (drawnItems._layers[selectedLayerId]) {
+        drawnItems._layers[selectedLayerId].setStyle(defaultShape);
+      }
 
       //switch selected layer to layer which has just been clicked
       selectedLayerId=e.target._leaflet_id;
@@ -154,7 +144,7 @@ map.on('draw:created', function (e) {
     });
 
     //highlight and select layer
-    if (selectedLayerId!==undefined) {
+    if (drawnItems._layers[selectedLayerId]!==undefined) {
       drawnItems._layers[selectedLayerId].setStyle(defaultShape);
     }
     selectedLayerId=layer._leaflet_id;
@@ -162,11 +152,8 @@ map.on('draw:created', function (e) {
 
 map.on('draw:edited', function (e) {
     var layers = e.layers;
-    layers.eachLayer(function (layer) {
-      //do whatever you want, most likely save back to db
-    });
+    selectedLayerId=undefined;
 });
-
 
 var findBoundaries=function(coordArr) {
   var boundaries={
@@ -190,9 +177,22 @@ var findBoundaries=function(coordArr) {
       boundaries.maxLng=coordinates.lng;
     }
   }
+
+  //set up check to limit boundaries to SF
+  if (boundaries.minLat<37.7) {
+    boundaries.minLat=37.7;
+  }
+  if (boundaries.maxLat>37.81) {
+    boundaries.maxLat=37.81;
+  }
+  if (boundaries.minLng<-122.53) {
+    boundaries.minLng=122.53;
+  }
+  if (boundaries.maxLng>-122.35) {
+    boundaries.maxLng=-122.35
+  }
   return boundaries;
 };
-
 
 var pointInPoly= function (point, polygon) {
   var convertToCoords=function(coordinates) {
@@ -225,9 +225,6 @@ var createTags=function() {
   var allTags={};
   for (id in drawnItems._layers) {
     var layer=drawnItems._layers[id];
-    // allTags[id]=allTags[id] || {};
-    // allTags[id]['coordinates']=layer._latlngs;
-
     //only add labels for points where there are labels
     console.log(layer.label);
     if (layer.label!==undefined) {
@@ -252,9 +249,7 @@ var createTags=function() {
           }
         }
       }
-
     }
-
   }
   return allTags;
 }
@@ -281,4 +276,3 @@ var sentimentColors = function (num) {
     return '#A6412E';
   }
 };
-

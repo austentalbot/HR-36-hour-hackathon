@@ -37,7 +37,6 @@ var pickMostPopular = function(arr) {
   return results;
 };
 
-
 // client.getCollection('labels').drop()
 
 client.open(function(err, p_client) {
@@ -93,7 +92,6 @@ exports.handleRequest = function (req, res) {
         //loop over each coordinate in collection
         //if coordinate does not exist, add it and its contents
         //if coordinate does exist, increment contents
-
         for (var coord in data) {
           (function(coord) {
             col.findOne({latlng: coord}, function(err, results) {
